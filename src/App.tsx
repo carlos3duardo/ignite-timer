@@ -1,11 +1,10 @@
-import { ThemeProvider } from 'styled-components';
+import { ThemeProvider } from 'styled-components'
 import { Button } from './components/Button'
 
-import { GlobalStyle } from './styles/themes/global';
-import { defaultTheme } from './styles/themes/default';
+import { GlobalStyle } from './styles/themes/global'
+import { defaultTheme } from './styles/themes/default'
 
 function App() {
-
   return (
     <ThemeProvider theme={defaultTheme}>
       <Button scheme="primary" />
