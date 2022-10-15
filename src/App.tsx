@@ -1,9 +1,15 @@
-import { useState } from 'react'
+import { Button } from './components/Button'
 
 function App() {
 
   return (
-    <h1>Ignite Timer</h1>
+    <>
+      <Button scheme="primary" />
+      <Button scheme="secondary" />
+      <Button scheme="danger" />
+      <Button scheme="success" />
+      <Button />
+    </>
   )
 }
 
