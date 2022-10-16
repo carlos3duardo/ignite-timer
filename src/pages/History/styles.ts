@@ -64,3 +64,27 @@ export const HistoryList = styled.div`
     }
   }
 `
+
+const STATUS_COLOR = {
+  green: 'green-500',
+  red: 'red-500',
+  yellow: 'yellow-500',
+} as const
+
+interface TaskStatusProps {
+  statusColor: keyof typeof STATUS_COLOR
+}
+
+export const TaskStatus = styled.span<TaskStatusProps>`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  &::before {
+    content: '';
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: ${(props) => props.theme[STATUS_COLOR[props.statusColor]]};
+  }
+`
