@@ -20,7 +20,7 @@ const formValidationRules = zod.object({
   task: zod.string().min(1, 'Informe a tarefa'),
   minutesAmount: zod
     .number()
-    .min(5, 'O ciclo não pode ser menor que 5 minutos')
+    .min(1, 'O ciclo não pode ser menor que 5 minutos')
     .max(60, 'O ciclo não pode ser maior de 60 minutos'),
 })
 
@@ -31,6 +31,7 @@ interface CycleInterface {
   task: string
   minutesAmount: number
   startedAt: Date
+  finishedAt?: Date
   interruptedAt?: Date
 }
 
@@ -48,22 +49,41 @@ export function Home() {
   })
 
   const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId)
+  const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0
 
   useEffect(() => {
     let interval: number
 
     if (activeCycle) {
       interval = setInterval(() => {
-        setAmountSecondsaPassed(
-          differenceInSeconds(new Date(), activeCycle.startedAt),
+        const secondsToFinish = differenceInSeconds(
+          new Date(),
+          activeCycle.startedAt,
         )
+
+        if (secondsToFinish >= totalSeconds) {
+          setCycles((state) =>
+            state.map((cycle) => {
+              if (cycle.id === activeCycleId) {
+                return { ...cycle, finishedAt: new Date() }
+              }
+
+              return cycle
+            }),
+          )
+
+          document.title = 'Ignite Timer'
+          setActiveCycleId(null)
+        } else {
+          setAmountSecondsaPassed(secondsToFinish)
+        }
       }, 1000)
     }
 
     return () => {
       clearInterval(interval)
     }
-  }, [activeCycle])
+  }, [activeCycle, activeCycleId, totalSeconds])
 
   function handleCreateNewCycle(data: NewCycleInterface) {
     const newCycleId = String(new Date().getTime())
@@ -83,8 +103,8 @@ export function Home() {
   }
 
   function handleInterruptCycle() {
-    setCycles(
-      cycles.map((cycle) => {
+    setCycles((state) =>
+      state.map((cycle) => {
         if (cycle.id === activeCycleId) {
           return { ...cycle, interruptedAt: new Date() }
         }
@@ -96,7 +116,6 @@ export function Home() {
     setActiveCycleId(null)
   }
 
-  const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0
   const currentSeconds = activeCycle ? totalSeconds - amountSecondsaPassed : 0
   const minutesAmount = Math.floor(currentSeconds / 60)
   const secondsAmount = currentSeconds % 60
@@ -139,8 +158,8 @@ export function Home() {
             type="number"
             id="minutesAmount"
             placeholder="00"
-            step={5}
-            min={5}
+            step={1}
+            min={1}
             max={60}
             disabled={!!activeCycle}
             {...register('minutesAmount', { valueAsNumber: true })}
