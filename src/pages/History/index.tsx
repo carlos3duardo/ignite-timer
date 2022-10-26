@@ -9,8 +9,6 @@ export function History() {
     <HistoryContainer>
       <h1>Meu hisórico</h1>
 
-      <pre>{JSON.stringify(cycles, null, 2)}</pre>
-
       <HistoryList>
         <table>
           <thead>
@@ -22,38 +20,39 @@ export function History() {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Tarefa 1</td>
-              <td>20 minutos</td>
-              <td>Há 2 meses</td>
-              <td>
-                <TaskStatus statusColor="green">Concluído</TaskStatus>
-              </td>
-            </tr>
-            <tr>
-              <td>Tarefa 1</td>
-              <td>20 minutos</td>
-              <td>Há 2 meses</td>
-              <td>
-                <TaskStatus statusColor="yellow">Em andamento</TaskStatus>
-              </td>
-            </tr>
-            <tr>
-              <td>Tarefa 1</td>
-              <td>20 minutos</td>
-              <td>Há 2 meses</td>
-              <td>
-                <TaskStatus statusColor="green">Concluído</TaskStatus>
-              </td>
-            </tr>
-            <tr>
-              <td>Tarefa 1</td>
-              <td>20 minutos</td>
-              <td>Há 2 meses</td>
-              <td>
-                <TaskStatus statusColor="red">Interrompido</TaskStatus>
-              </td>
-            </tr>
+            {cycles.map(
+              ({
+                id,
+                task,
+                minutesAmount,
+                startedAt,
+                finishedAt,
+                interruptedAt,
+              }) => {
+                return (
+                  <tr key={id}>
+                    <td>{task}</td>
+                    <td>{minutesAmount} minutos</td>
+                    <td>{startedAt.toISOString()}</td>
+                    <td>
+                      {finishedAt && (
+                        <TaskStatus statusColor="green">Concluído</TaskStatus>
+                      )}
+
+                      {interruptedAt && (
+                        <TaskStatus statusColor="red">Interrompido</TaskStatus>
+                      )}
+
+                      {!finishedAt && !interruptedAt && (
+                        <TaskStatus statusColor="yellow">
+                          Em andamento
+                        </TaskStatus>
+                      )}
+                    </td>
+                  </tr>
+                )
+              },
+            )}
           </tbody>
         </table>
       </HistoryList>
