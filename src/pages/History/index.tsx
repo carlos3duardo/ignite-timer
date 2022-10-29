@@ -36,8 +36,13 @@ export function History() {
                     <td>{task}</td>
                     <td>{minutesAmount} minutos</td>
                     <td>
-                      <span title={format(startedAt, 'dd/MM/yyyy HH:mm:ss')}>
-                        {formatDistanceToNow(startedAt, {
+                      <span
+                        title={format(
+                          new Date(startedAt),
+                          'dd/MM/yyyy HH:mm:ss',
+                        )}
+                      >
+                        {formatDistanceToNow(new Date(startedAt), {
                           addSuffix: true,
                           locale: ptBR,
                         })}
