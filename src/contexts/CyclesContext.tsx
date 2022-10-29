@@ -39,7 +39,6 @@ interface CyclesStateProps {
 export function CyclesContextProvider({
   children,
 }: CyclesContextProviderInterface) {
-  // const [cycles, setCycles] = useState<CycleInterface[]>([])
   const [cyclesState, dispatch] = useReducer(
     (state: CyclesStateProps, action: any) => {
       if (action.type === 'CREATE_NEW_CYCLE') {
@@ -64,6 +63,20 @@ export function CyclesContextProvider({
         }
       }
 
+      if (action.type === 'FINISH_CURRENT_CYCLE') {
+        return {
+          ...state,
+          cycles: state.cycles.map((cycle) => {
+            if (cycle.id === state.activeCycleId) {
+              return { ...cycle, finishedAt: new Date() }
+            } else {
+              return cycle
+            }
+          }),
+          activeCycleId: null,
+        }
+      }
+
       return state
     },
     {
@@ -72,7 +85,6 @@ export function CyclesContextProvider({
     },
   )
 
-  // const [activeCycleId, setActiveCycleId] = useState<string | null>(null)
   const [amountSecondsaPassed, setAmountSecondsaPassed] = useState(0)
 
   const { cycles, activeCycleId } = cyclesState
@@ -90,15 +102,6 @@ export function CyclesContextProvider({
         activeCycleId,
       },
     })
-    // setCycles((state) =>
-    //   state.map((cycle) => {
-    //     if (cycle.id === activeCycleId) {
-    //       return { ...cycle, finishedAt: new Date() }
-    //     }
-
-    //     return cycle
-    //   }),
-    // )
   }
 
   function createNewCycle(data: CreateCycleInterface) {
@@ -118,20 +121,10 @@ export function CyclesContextProvider({
       },
     })
 
-    // setCycles((state) => [...state, newCycle])
     setAmountSecondsaPassed(0)
   }
 
   function interruptCurrentCycle() {
-    // setCycles((state) =>
-    //   state.map((cycle) => {
-    //     if (cycle.id === activeCycleId) {
-    //       return { ...cycle, interruptedAt: new Date() }
-    //     }
-
-    //     return cycle
-    //   }),
-    // )
     dispatch({
       type: 'INTERRUPT_CURRENT_CYCLE',
       payload: {
